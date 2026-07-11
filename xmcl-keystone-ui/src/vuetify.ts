@@ -74,9 +74,41 @@ export const vuetify = createVuetify({
       dark: {
         dark: true,
         colors: {
-          primary: '#4caf50',
-          accent: '#00e676',
+          background: '#000000', /* Handled by --md-sys-color-background */
+          surface: '#121212',    /* Handled by --md-sys-color-surface */
+          primary: '#C5C5C5',    /* Handled by --md-sys-color-primary */
+          'primary-darken-1': '#121212', /* Handled by --md-sys-color-on-primary */
+          secondary: '#C5C5C5',
+          'secondary-darken-1': '#121212',
+          error: '#FFB4AB',
+          info: '#C5C5C5',
+          success: '#C5C5C5',
+          warning: '#C5C5C5',
+          'on-background': '#E3E3E3',
+          'on-surface': '#E3E3E3',
+          'on-primary': '#121212',
+          'on-secondary': '#121212',
+          'on-error': '#93000A',
         },
+        variables: {
+          /* Nullify Vuetify's default border opacity and shadows to rely purely on M3E */
+          'border-color': '#919191',
+          'border-opacity': 1,
+          'high-emphasis-opacity': 1,
+          'medium-emphasis-opacity': 1,
+          'disabled-opacity': 0.38,
+          'idle-opacity': 0.04,
+          'hover-opacity': 0.08,
+          'focus-opacity': 0.12,
+          'selected-opacity': 0.12,
+          'activated-opacity': 0.12,
+          'pressed-opacity': 0.12,
+          'dragged-opacity': 0.16,
+          'theme-kbd': '#E3E3E3',
+          'theme-on-kbd': '#121212',
+          'theme-code': '#222222',
+          'theme-on-code': '#E3E3E3',
+        }
       },
     },
   },

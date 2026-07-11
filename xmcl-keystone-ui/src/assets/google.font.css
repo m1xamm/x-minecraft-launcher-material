@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0');
+
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;
@@ -43,7 +45,7 @@
 }
 
 .material-icons {
-  font-family: 'Material Icons';
+  font-family: 'Material Symbols Rounded', 'Material Icons';
   font-weight: normal;
   font-style: normal;
   line-height: 1;
@@ -54,6 +56,8 @@
   word-wrap: normal;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
+  /* M3E Defaults for all icons */
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 .material-symbols-outlined {

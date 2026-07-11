@@ -62,75 +62,153 @@ p {
 }
 
 html {
-    --highlight-color: #fbc02d;
+    /* ── MATERIAL 3 EXPRESSIVE: FOUNDATION TOKENS ── */
+    /* This token system is the single source of truth for the XMCL 2026 redesign. */
+    /* Strict adherence to docs/DESIGN_PRINCIPLES.md is required. */
 
-    /* ── Shared surface tokens (dialogs, menus, popovers) ──
-       These are the FALLBACKS. The real source of truth lives in
-       `src/composables/surfaceTokens.ts` — `useSurfaceTokens()` is
-       provided at the app root (windows/app/Context.ts) and pushes
-       its reactive refs onto <html> as `--surface-*` properties.
-       Override them programmatically by injecting `kSurfaceTokens`
-       and writing to the refs (a future settings UI will wire here). */
-    --surface-radius: 16px;                                              /* matches Vuetify `rounded="xl"` */
-    --surface-border: 1px solid rgba(var(--v-theme-on-surface), 0.10);
-    --surface-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.35);
+    /* 1. COLOR TOKENS (Monochrome Dark) */
+    --md-sys-color-background: #000000;
+    --md-sys-color-surface: #121212;
+    --md-sys-color-surface-dim: #0D0D0D;
+    --md-sys-color-surface-bright: #383838;
+    
+    --md-sys-color-surface-container-lowest: #0D0D0D;
+    --md-sys-color-surface-container-low: #1A1A1A;
+    --md-sys-color-surface-container: #222222;
+    --md-sys-color-surface-container-high: #2A2A2A;
+    --md-sys-color-surface-container-highest: #333333;
+    
+    --md-sys-color-on-surface: #E3E3E3;
+    --md-sys-color-on-surface-variant: #C4C4C4;
+    
+    --md-sys-color-outline: #919191;
+    --md-sys-color-outline-variant: #444444;
+    
+    /* Primary (Monochrome Default, can be tinted by Mood Layer dynamically) */
+    --md-sys-color-primary: #C5C5C5;
+    --md-sys-color-on-primary: #121212;
+    --md-sys-color-primary-container: #454545;
+    --md-sys-color-on-primary-container: #EFEFEF;
 
-    /* Frosted-glass background shared by dialogs, menus and popovers. */
-    --surface-bg: rgba(var(--v-theme-surface), 0.82);
-    --surface-blur: 48px;
+    --md-sys-color-error: #FFB4AB;
+    --md-sys-color-error-container: #93000A;
+    --md-sys-color-on-error-container: #FFDAD6;
 
-    /* Menu-only: inner padding + list-item radius (dialogs don't share). */
-    --surface-menu-padding: 6px;
-    --surface-menu-item-radius: 10px;
-    --surface-dialog-radius: 32px;
-    --surface-tooltip-radius: 10px;
-    --surface-pill-radius: 9999px;
+    /* 2. SHAPE TOKENS (Expressive Hierarchy) */
+    --md-sys-shape-corner-none: 0px;
+    --md-sys-shape-corner-extra-small: 4px;
+    --md-sys-shape-corner-small: 8px;
+    --md-sys-shape-corner-medium: 12px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-extra-large: 28px;
+    --md-sys-shape-corner-full: 9999px;
+    --md-sys-shape-inner-shared: 4px; /* For split containers and adjacent inner edges */
 
-    /* Cards — three intentional tiers. Apply with the `.surface-card`,
-       `.surface-card-subsection`, `.surface-card-item` utility classes. */
-    --card-radius: 16px;
-    --card-subsection-radius: 12px;
-    --card-item-radius: 10px;
-    --card-subsection-elevation: 0;  /* Vuetify elevation prop number (read via JS, not CSS) */
-    --card-subsection-bg: rgb(var(--v-theme-surface));
-    --card-subsection-border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    /* 3. TYPOGRAPHY TOKENS (Desktop Scaled) */
+    --md-sys-typescale-display-large: 57px;
+    --md-sys-typescale-display-medium: 45px;
+    --md-sys-typescale-display-small: 36px;
+    
+    --md-sys-typescale-headline-large: 32px;
+    --md-sys-typescale-headline-medium: 28px;
+    --md-sys-typescale-headline-small: 24px;
+    
+    --md-sys-typescale-title-large: 22px;
+    --md-sys-typescale-title-medium: 16px;
+    --md-sys-typescale-title-small: 14px;
+    
+    --md-sys-typescale-body-large: 16px;
+    --md-sys-typescale-body-medium: 14px;
+    --md-sys-typescale-body-small: 12px;
+    
+    --md-sys-typescale-label-large: 14px;
+    --md-sys-typescale-label-medium: 12px;
+    --md-sys-typescale-label-small: 11px;
 
-    /* Row card — list rows (`.surface-card-row`). Same border-swap
-       interaction as `.surface-card-clickable` but with the small
-       item radius and no lift / shadow. */
-    --card-row-bg: rgb(var(--v-theme-surface));
-    --card-row-border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-    --card-row-border-hover: 1px solid rgba(var(--v-theme-primary), 0.45);
-    --card-row-active-scale: 0.98;
-    --card-row-transition: border-color 0.2s ease, background-color 0.15s ease, transform 0.1s ease;
-    --card-bg: transparent;          /* let Vuetify's surface color show through */
-    --card-border: none;             /* most cards have no border */
+    /* 4. MOTION TOKENS (Desktop Spring & M3 Curves) */
+    --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+    --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0.0, 0.8, 0.15);
+    --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+    --md-sys-motion-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0); /* Smoothed for desktop */
+    
+    --md-sys-motion-duration-short1: 50ms;
+    --md-sys-motion-duration-short2: 100ms;
+    --md-sys-motion-duration-short3: 150ms;
+    --md-sys-motion-duration-short4: 200ms;
+    --md-sys-motion-duration-medium1: 250ms;
+    --md-sys-motion-duration-medium2: 300ms;
+    --md-sys-motion-duration-medium3: 350ms;
+    --md-sys-motion-duration-medium4: 400ms;
+    --md-sys-motion-duration-long1: 450ms;
+    --md-sys-motion-duration-long2: 500ms;
 
-    /* Frosted info panels — the `.surface-panel` utility class.
-       Padding is left to callsites (some panels host lists w/ their own). */
-    --panel-radius: 24px;
-    --panel-bg: rgba(var(--v-theme-on-surface), 0.04);
-    --panel-border: 1px solid rgba(var(--v-theme-on-surface), 0.10);
+    /* 5. SPACING TOKENS (4px Grid Baseline) */
+    --md-sys-spacing-1: 4px;
+    --md-sys-spacing-2: 8px;
+    --md-sys-spacing-3: 12px;
+    --md-sys-spacing-4: 16px;
+    --md-sys-spacing-5: 24px;
+    --md-sys-spacing-6: 32px;
+    --md-sys-spacing-7: 48px;
+    --md-sys-spacing-8: 64px;
 
-    /* Prominent cards (store detail / large feature). */
-    --card-prominent-radius: 24px;
+    /* 6. ICON SIZING TOKENS */
+    --md-sys-icon-size-small: 18px;
+    --md-sys-icon-size-medium: 24px;
+    --md-sys-icon-size-large: 32px;
 
-    /* Clickable card interaction (lift + shadow + primary-tinted border on
-       hover). Apply via the `.surface-card-clickable` utility — it ships
-       a solid surface bg and the prominent 24px radius by default so the
-       Store-style tile language is the default. Pair with inner UnoCSS
-       atomics if a specific tile needs a different padding / layout. */
-    --card-clickable-radius: 24px;
-    --card-clickable-bg: rgb(var(--v-theme-surface));
-    --card-clickable-border: 1px solid rgba(var(--v-theme-on-surface), 0.06);
-    --card-clickable-border-hover: 1px solid rgba(var(--v-theme-primary), 0.35);
-    --card-clickable-shadow-hover: 0 12px 24px -8px rgba(0, 0, 0, 0.25),
-                                    0 4px 12px -4px rgba(0, 0, 0, 0.15);
-    --card-clickable-lift: -4px;
-    --card-clickable-active-scale: 0.98;
-    --card-clickable-transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                                 border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 7. ELEVATION & OPACITY TOKENS */
+    --md-sys-elevation-0: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    --md-sys-elevation-1: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-2: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-3: 0px 1px 3px 0px rgba(0, 0, 0, 0.3), 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-4: 0px 2px 3px 0px rgba(0, 0, 0, 0.3), 0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-5: 0px 4px 4px 0px rgba(0, 0, 0, 0.3), 0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+    
+    --md-sys-opacity-hover: 0.08;
+    --md-sys-opacity-focus: 0.12;
+    --md-sys-opacity-pressed: 0.12;
+    --md-sys-opacity-dragged: 0.16;
+    
+    /* Dynamic blur token for backgrounds */
+    --md-sys-blur-background: 48px;
+}
+
+/* ── SHAPE SYSTEM UTILITIES ── */
+/* M3E Connected Cards & Split Containers */
+
+.m3-split-container {
+    display: flex;
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    background: var(--md-sys-color-surface-container-lowest);
+    overflow: hidden;
+}
+
+.m3-split-container > .m3-split-pane-left {
+    border-top-left-radius: var(--md-sys-shape-corner-extra-large);
+    border-bottom-left-radius: var(--md-sys-shape-corner-extra-large);
+    border-top-right-radius: var(--md-sys-shape-inner-shared);
+    border-bottom-right-radius: var(--md-sys-shape-inner-shared);
+    margin-right: var(--md-sys-spacing-1);
+    background: var(--md-sys-color-surface-container);
+}
+
+.m3-split-container > .m3-split-pane-right {
+    border-top-right-radius: var(--md-sys-shape-corner-extra-large);
+    border-bottom-right-radius: var(--md-sys-shape-corner-extra-large);
+    border-top-left-radius: var(--md-sys-shape-inner-shared);
+    border-bottom-left-radius: var(--md-sys-shape-inner-shared);
+    background: var(--md-sys-color-surface-container);
+}
+
+/* Reduces motion for a11y */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 .v-list-item,

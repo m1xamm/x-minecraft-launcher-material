@@ -593,7 +593,6 @@ instances:
   folderSetting: Configuración de carpeta
   importFolderDescription: Importar Minecraft al Lanzador
   loadingFiles: Cargando archivos Modpack
-  addPrismDescription: Importar instancia existente de PrismLauncher.
 items:
   count: '{count} ítems'
   total: '{total} total'
@@ -1376,7 +1375,7 @@ save:
   noSavesFound: No se encontraron partidas
   noSavesInstalled: No tienes ninguna partida guardada
   properties: Propiedades del mundo
-  search: Buscar mapas...
+  searchMap: Buscar mapas...
   useMouseRotate: Usar el ratón para rotar la vista
   useScrollZoom: Usar la rueda del ratón para hacer zoom
   world: Mundo
@@ -2159,5 +2158,5 @@ instanceLauncher:
   title: Todas las instancias
 migrateMinecraft:
   name: Migrar archivos de Minecraft
-reinstall:
+reinstallVersion:
   name: Reinstalar {version}

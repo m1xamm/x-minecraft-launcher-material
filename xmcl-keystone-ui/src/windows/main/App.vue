@@ -1,19 +1,27 @@
 <template>
+  <!-- ── Main launcher shell ── -->
   <v-app v-if="!showSetup" class="h-full max-h-screen overflow-hidden" :class="{ 'dark': isDark }">
     <AppBackground />
-    <div class="w-full h-full absolute left-0 header-overlay" :style="{
-      height: headerHeight + 70 + 'px',
-      'background-image': `linear-gradient(${appBarColor} 0%, color-mix(in srgb, ${appBarColor}, transparent) 65%, transparent 100%)`
-    }">
-    </div>
-    <AppSystemBar :back="sidebarStyle === 'notch'" />
+
+    <!-- Background gradient overlay behind top bar -->
     <div
-      class="app-layout flex-grow relative flex overflow-auto"
-      :class="layoutClasses"
-    >
-      <AppSideBarClassic v-if="sidebarStyle === 'classic'" />
-      <AppSideBarNotch v-else />
-      <main class="relative flex max-h-full flex-1 flex-col overflow-auto" :class="mainClasses">
+      class="w-full h-full absolute left-0 header-overlay pointer-events-none"
+      :style="{
+        height: headerHeight + 70 + 'px',
+        'background-image': `linear-gradient(${appBarColor} 0%, color-mix(in srgb, ${appBarColor}, transparent) 65%, transparent 100%)`
+      }"
+    />
+
+    <!-- M3 Top App Bar (window chrome) -->
+    <M3TopAppBar />
+
+    <!-- Body row: [Nav Rail] + [Main Content] -->
+    <div class="m3-app-body">
+      <!-- New unified M3 Navigation -->
+      <AppNavigationM3 />
+
+      <!-- Main content area -->
+      <main class="m3-main-content">
         <router-view v-slot="{ Component }">
           <transition name="fade-transition" mode="out-in">
             <component :is="Component" class="z-2" />
@@ -21,6 +29,8 @@
         </router-view>
       </main>
     </div>
+
+    <!-- ── Global overlays & dialogs (unchanged) ── -->
     <AppContextMenu />
     <AppNotifier />
     <AppCommandPalette />
@@ -44,9 +54,11 @@
     <AppSideBarGroupSettingDialog :default-color="defaultColor" />
     <AppGamepadPrompt />
   </v-app>
+
+  <!-- ── Setup wizard shell (first run) ── -->
   <v-app v-else class="h-full max-h-screen overflow-hidden" :class="{ 'dark': isDark }">
     <AppSystemBar no-user no-task />
-    <div class="app-layout relative flex min-h-0 flex-1 overflow-hidden">
+    <div class="m3-app-body">
       <Setup @ready="onReady" />
     </div>
     <UserProfileDialog :value="userProfileDialogShown" @input="userProfileDialogShown = $event" />
@@ -73,7 +85,7 @@ import { kSettingsState } from '@/composables/setting'
 import { kTheme } from '@/composables/theme'
 import { kTutorial } from '@/composables/tutorial'
 import { kInFocusMode } from '@/composables/uiLayout'
-import { kSidebarSettings, useInjectSidebarSettings, useSidebarSettings } from '@/composables/sidebarSettings'
+import { kSidebarSettings, useSidebarSettings } from '@/composables/sidebarSettings'
 import { basename } from '@/util/basename'
 import { injection } from '@/util/inject'
 import AppAddInstanceDialog from '@/views/AppAddInstanceDialog.vue'
@@ -94,9 +106,10 @@ import UserProfileDialog from '@/components/UserProfileDialog.vue'
 import AppModrinthLoginDialog from '@/views/AppModrinthLoginDialog.vue'
 import AppNotifier from '@/views/AppNotifier.vue'
 import AppShareInstanceDialog from '@/views/AppShareInstanceDialog.vue'
-import AppSideBarClassic from '@/views/AppSideBarClassic.vue'
-import AppSideBarNotch from '@/views/AppSideBarNotch.vue'
+import AppSideBarGroupSettingDialog from '@/views/AppSideBarGroupSettingDialog.vue'
 import AppSystemBar from '@/views/AppSystemBar.vue'
+import AppNavigationM3 from '@/views/AppNavigationM3.vue'
+import M3TopAppBar from '@/components/material/M3TopAppBar.vue'
 import AppTaskDialog from '@/views/AppTaskDialog.vue'
 import Setup from '@/views/Setup.vue'
 import { useLocalStorage, useMediaQuery, usePreferredColorScheme, usePreferredDark } from '@vueuse/core'
@@ -104,7 +117,6 @@ import { kInstanceLauncher, useInstanceLauncher } from '@/composables/instanceLa
 import { kMinecraftFriends, useMinecraftFriendsImpl } from '@/composables/minecraftFriends'
 import { useUserMenuControl } from '@/composables/userMenu'
 import { UserSkinRenderPaused } from '@/composables/userSkin'
-import AppSideBarGroupSettingDialog from '@/views/AppSideBarGroupSettingDialog.vue'
 import AppGamepadPrompt from '@/views/AppGamepadPrompt.vue'
 import { useInstanceGroupDefaultColor } from '@/composables/instanceGroup'
 
@@ -162,22 +174,6 @@ provide(kInFocusMode, computed({
 
 provide(kLaunchButton, useLaunchButton())
 
-const sidebarSettings = useSidebarSettings()
-provide(kSidebarSettings, sidebarSettings)
-const sidebarPosition = computed(() => sidebarSettings.position.value)
-const sidebarStyle = computed(() => sidebarSettings.style.value)
-
-const layoutClasses = computed(() => ({
-  'flex-row': sidebarPosition.value === 'left' || sidebarPosition.value === 'right',
-  'flex-col': sidebarPosition.value === 'top' || sidebarPosition.value === 'bottom',
-  'flex-row-reverse': sidebarPosition.value === 'right',
-  'flex-col-reverse': sidebarPosition.value === 'bottom',
-}))
-
-const mainClasses = computed(() => ({
-  'inset-y-0': sidebarPosition.value === 'left' || sidebarPosition.value === 'right',
-  'inset-x-0': sidebarPosition.value === 'top' || sidebarPosition.value === 'bottom',
-}))
 
 const compact = ref(false)
 provide(kCompact, compact)
@@ -226,6 +222,46 @@ useAuthProfileImportNotification(notify)
   width: 64px;
   height: auto;
   /*to preserve the aspect ratio of the image*/
+}
+
+.v-input__icon--prepend {
+  margin-right: 7px;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+</style>
+
+<style scoped>
+/* ── M3 app layout shell ── */
+.m3-app-body {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.m3-main-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-height: 100%;
+  overflow: auto;
+}
+
+/* Preserved legacy helpers */
+.clip-head {
+  clip-path: inset(0px 30px 30px 0px) !important;
+  width: 64px;
+  height: auto;
 }
 
 .v-input__icon--prepend {
